@@ -17,14 +17,18 @@ async function* asyncRange(
   }
 }
 
+// tqdm over an array
 for await (const it of tqdm([1, 2, 3, 4, 5, 6, 7, 8, 9])) {
   await new Promise((res) => setTimeout(res, 250));
 }
+
 const max = 100;
+// tqdm over synchronous iterables
 for await (const it of tqdm(range(max))) {}
 for await (const it of tqdm(range(max), { label: "Count" })) {}
 for await (const it of tqdm(range(max), { size: max })) {}
 for await (const it of tqdm(range(max), { label: "Count", size: max })) {}
+// tqdm over asynchronous iterables
 for await (const it of tqdm(asyncRange(max))) {}
 for await (const it of tqdm(asyncRange(max), { label: "Count" })) {}
 for await (const it of tqdm(asyncRange(max), { size: max })) {}
