@@ -109,6 +109,7 @@ export async function* tqdm<T>(
   { label, size, width = 16 }: TqdmOptions = {},
 ): AsyncIterableIterator<T> {
   if (Array.isArray(iter)) {
+    size = iter.length;
     iter = arrayToIterableIterator(iter);
   }
   if (isIterableIterator(iter)) {

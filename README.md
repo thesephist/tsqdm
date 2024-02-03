@@ -35,7 +35,7 @@ Running `deno run main.ts` shows the following styles of progress bars:
 
 ```
 $ deno run main.ts
-9 | 2.27s 3.96it/s
+100.0% |████████████████| 9/9 | 2.28>0.00s 3.95it/s
 100 | 4.71s 21.23it/s
 Count: 100 | 4.76s 21.03it/s
 100.0% |████████████████| 100/100 | 4.83>0.00s 20.72it/s
