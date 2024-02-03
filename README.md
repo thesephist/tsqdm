@@ -31,6 +31,21 @@ for await (const it of tqdm(asyncRange(max), { size: max })) {}
 for await (const it of tqdm(asyncRange(max), { label: "Count", size: max })) {}
 ```
 
+Running `deno run main.ts` shows the following styles of progress bars:
+
+```
+$ deno run main.ts
+9 | 2.27s 3.96it/s
+100 | 4.71s 21.23it/s
+Count: 100 | 4.76s 21.03it/s
+100.0% |████████████████| 100/100 | 4.83>0.00s 20.72it/s
+Count: 100.0% |████████████████| 100/100 | 4.70>0.00s 21.29it/s
+100 | 3.46s 28.94it/s
+Count: 100 | 3.50s 28.60it/s
+100.0% |████████████████| 100/100 | 3.44>0.00s 29.10it/s
+Count: 100.0% |████████████████| 100/100 | 3.53>0.00s 28.34it/s
+```
+
 ## Why?
 
 I needed a nice async iterable progress bar for running some of my long-running research jobs, and existing libraries like npm/tqdm either didn't seem well-maintained or didn't have types.
