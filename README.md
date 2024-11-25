@@ -4,6 +4,12 @@ TQDM-style async-aware progress bar for TypeScript on Node.js and Deno.
 
 ## Usage
 
+First, install the package from NPM. Alternatively, you can just copy the `src/tqdm.ts` file into your project, since it's meant to be a small portable library.
+
+```bash
+npm install @thesephist/tsqdm
+```
+
 Tsqdm exposes a single named export, `tqdm`, which can wrap any of:
 
 - `Array<T>`
@@ -13,6 +19,8 @@ Tsqdm exposes a single named export, `tqdm`, which can wrap any of:
 See `./main.ts` for some examples of usage wrapping different types of collections and iterables. For example:
 
 ```ts
+import { tqdm } from "@thesephist/tsqdm";
+
 // tqdm over an array
 for await (const it of tqdm([1, 2, 3, 4, 5, 6, 7, 8, 9])) {
   await new Promise((res) => setTimeout(res, 250));
