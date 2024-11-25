@@ -30,19 +30,19 @@ function renderBarWithSize({
   width,
   elapsed,
 }: RenderBarOptions & { size: number }): string {
-  const n = Math.max(i * 8 * width / size, 0);
+  const n = Math.max((i * 8 * width) / size, 0);
   const whole = Math.floor(n / 8);
   const rem = Math.round(n % 8);
   const bar = new Array(whole).fill(filledMarker).join("") + markers[rem];
   const gap = new Array(width - bar.length).fill(" ").join("");
   const rate = i / elapsed;
   const remaining = (size - i) / rate;
-  const percent = i / size * 100;
-  const graph = `${label ? label + ": " : ""}${
-    percent.toFixed(1)
-  }% |${bar}${gap}| ${i}/${size} | ${elapsed.toFixed(2)}>${
-    remaining.toFixed(2)
-  }s ${rate.toFixed(2)}it/s`;
+  const percent = (i / size) * 100;
+  const graph = `${label ? label + ": " : ""}${percent.toFixed(
+    1,
+  )}% |${bar}${gap}| ${i}/${size} | ${elapsed.toFixed(2)}>${remaining.toFixed(
+    2,
+  )}s ${rate.toFixed(2)}it/s`;
   if (graph === "" && n > 0) {
     return "▏";
   }
@@ -53,11 +53,11 @@ function renderBarWithoutSize({
   i,
   label,
   elapsed,
-}: RenderBarOptions & { size: undefined }): string {
+}: Omit<RenderBarOptions, "size">): string {
   const rate = i / elapsed;
-  const graph = `${label ? label + ": " : ""}${i} | ${elapsed.toFixed(2)}s ${
-    rate.toFixed(2)
-  }it/s`;
+  const graph = `${label ? label + ": " : ""}${i} | ${elapsed.toFixed(
+    2,
+  )}s ${rate.toFixed(2)}it/s`;
   if (graph === "" && i > 0) {
     return "▏";
   }
@@ -68,12 +68,9 @@ function renderBarWithoutSize({
  * TQDM bar rendering logic extracted out for easy testing and modularity.
  * Renders the full bar string given all necessary inputs.
  */
-function renderBar({
-  size,
-  ...options
-}: RenderBarOptions): string {
+function renderBar({ size, ...options }: RenderBarOptions): string {
   if (size === undefined) {
-    return renderBarWithoutSize({ size: undefined, ...options });
+    return renderBarWithoutSize({ ...options });
   }
   return renderBarWithSize({ size, ...options });
 }
@@ -85,9 +82,11 @@ function* arrayToIterableIterator<T>(iter: T[]): IterableIterator<T> {
 function isIterableIterator<T>(
   value: IterableIterator<T> | AsyncIterableIterator<T>,
 ): value is IterableIterator<T> {
-  return value != null &&
+  return (
+    value != null &&
     typeof (value as IterableIterator<T>)[Symbol.iterator] === "function" &&
-    typeof value.next === "function";
+    typeof value.next === "function"
+  );
 }
 
 async function* toAsyncIterableIterator<T>(
@@ -95,6 +94,35 @@ async function* toAsyncIterableIterator<T>(
 ): AsyncIterableIterator<T> {
   for (const it of iter) {
     yield it;
+  }
+}
+
+function unreachable(x: never): never {
+  throw new Error(`Unreachable: ${x}`);
+}
+
+class Writer {
+  private runtime: "deno" | "node";
+  private encoder = new globalThis.TextEncoder();
+
+  constructor() {
+    if ((globalThis as any).Deno) {
+      this.runtime = "deno";
+    } else if ((globalThis as any).process) {
+      this.runtime = "node";
+    } else {
+      throw new Error("Unsupported runtime");
+    }
+  }
+
+  async write(s: string): Promise<void> {
+    if (this.runtime === "deno") {
+      await (globalThis as any).Deno.stdout.write(this.encoder.encode(s));
+    } else if (this.runtime === "node") {
+      await (globalThis as any).process.stdout.write(s);
+    } else {
+      unreachable(this.runtime);
+    }
   }
 }
 
@@ -117,16 +145,15 @@ export async function* tqdm<T>(
   }
 
   const start = Date.now();
-  const encoder = new TextEncoder();
-  async function print(s: string): Promise<void> {
-    await Deno.stdout.write(encoder.encode(s));
-  }
+  const writer = new Writer();
   let i = 1;
   for await (const it of iter) {
     yield it;
     const elapsed = (Date.now() - start) / 1000;
-    await print(renderBar({ i, label, size, width, elapsed }) + "\x1b[1G");
+    await writer.write(
+      renderBar({ i, label, size, width, elapsed }) + "\x1b[1G",
+    );
     i++;
   }
-  print("\n");
+  void writer.write("\n");
 }
