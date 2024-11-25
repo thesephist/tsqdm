@@ -2,6 +2,7 @@
   "name": "@thesephist/tsqdm",
   "version": "0.1.0",
   "description": "A TQDM-style progress bar for TypeScript and Deno.",
+  "private": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -11,12 +12,13 @@
   ],
   "scripts": {
     "test": "jest",
-    "format": "prettier --write src",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "format": "prettier --write src ./main.ts",
+    "lint": "eslint src ./main.ts",
+    "lint:fix": "eslint src ./main.ts --fix",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
-    "precommit": "npm run format && npm run lint && npm run typecheck && npm run test && npm run build"
+    "precommit": "npm run format && npm run lint && npm run typecheck && npm run test && npm run build",
+    "demo": "tsx main.ts"
   },
   "repository": {
     "type": "git",

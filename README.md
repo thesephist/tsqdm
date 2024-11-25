@@ -1,6 +1,6 @@
-# tsqdm
+# tsqdm ⏳
 
-TQDM for TypeScript / Deno.
+TQDM-style async-aware progress bar for TypeScript on Node.js and Deno.
 
 ## Usage
 
@@ -31,7 +31,7 @@ for await (const it of tqdm(asyncRange(max), { size: max })) {}
 for await (const it of tqdm(asyncRange(max), { label: "Count", size: max })) {}
 ```
 
-Running `deno run main.ts` shows the following styles of progress bars:
+Running `npx tsx main.ts` or `deno run main.ts` shows the following styles of progress bars:
 
 ```
 $ deno run main.ts
@@ -50,5 +50,4 @@ Count: 100.0% |████████████████| 100/100 | 3.53>
 
 I needed a nice async iterable progress bar for running some of my long-running research jobs, and existing libraries like npm/tqdm either didn't seem well-maintained or didn't have types.
 
-This is a pretty small library (~103 CLOC), so can easily be pulled into small scripts and projects.
-
+This is a pretty small library (~120 CLOC), so can easily be pulled into small scripts and projects.
