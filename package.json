@@ -1,11 +1,11 @@
 {
   "name": "@thesephist/tsqdm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A TQDM-style progress bar for TypeScript and Deno.",
   "private": false,
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "dist/tqdm.js",
+  "module": "dist/tqdm.mjs",
+  "types": "dist/tqdm.d.ts",
   "files": [
     "dist",
     "README.md"
